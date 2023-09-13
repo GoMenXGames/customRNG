@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+        * {
+            text-shadow: 
+                1px 0 1px rgb(0, 0, 0),
+                1px 1px 1px rgb(0, 0, 0),
+                -1px 0 1px rgb(0, 0, 0),
+                -1px -1px 1px rgb(0, 0, 0);
+            color: white;
+            box-sizing: border-box;
+            /* margin: 0;
+            padding: 0; */
+        }
+        body {
+            /* background-color: rgb(255, 121, 0); */
+            height: 100vh;
+            display: inline-grid;
+            width: 100%;
+            grid-template-columns: 1fr 250px 1fr;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1,h2,hr {
+            margin: 0;
+            padding: 0;
+        }
+        div.left, div.right {
+            padding: 21px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        div.right {
+            padding: 21px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        div.center {
+            gap: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        ol {
+            display: flex;
+            flex-direction: column;
+            max-height: 30vh;
+            overflow-y: scroll;
+        }
+        .flexColumn {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+        }
+        /* li {
+            margin-left: 33px;
+        } */
+        input {
+            text-align: right;
+            background-color: rgba(0, 0, 0, 0.21);
+            border: 2px white inset;
+        }
+        button {
+            /* border: 3px outset white; */
+            border-radius: 25px;
+            padding: 4px;
+            background: #00000056;
+        }
+        /* legend {
+            padding:5px;
+        }
+        fieldset {
+            padding: 8px;
+        } */
+        /* span {
+            position: relative;
+        }
+        a {
+            z-index: -1;
+            position: absolute;
+            top: 0px;
+            right: 2px;
+        } */
+    </style>
+    <title>Random chance</title>
+</head>
+<body>
+    <div class="left">
+        <div class="flexColumn">
+            <h2>1</h2>
+            <hr/>
+            <h2 class="chanceNum">4</h2>
+        </div>
+    </div>
+    <div class="center">
+        <h1 title="">Проверь удачу!</h1>
+        <span><input type="number" class="input" value="25" name="chanceAmount" id="chanceAmount" step="1" max="100" min="1"><a> %</a></span>
+        <button>Проверить удачу!</button> 
+        <div>
+            <input type="checkbox" class="checkbox" id="sex" checked> 
+            <label for="sex">Показать историю</label>
+        </div>
+    </div>
+    <div class="right">
+        <h1>0</h1>
+    </div>
+    <div></div>
+    <fieldset class="history">
+        <legend> История попыток: </legend>
+        <ol>
+            test
+        </ol>
+    </fieldset>
+</body>
+</html>
+<script>
+    let resultField = document.querySelector("h1") 
+    let inputField = document.querySelector(".input")
+    let checkbox = document.querySelector(".checkbox")
+    let btn = document.querySelector("button")
+    let num = document.querySelector(".chanceNum")
+    let chanceTryElem = document.querySelector("div.right>h1")
+    let historyElem = document.querySelector(".history")
+    let list = document.querySelector("ol")
+    let listRng = []
+    
+    let chanceTry = 0
+
+    function htmlArray(array) {
+            htmlText = ""
+            array.forEach(element => {
+                htmlText+=("<li>"+element+"</li>")
+            });
+            return htmlText
+        }
+
+    function getBright() {
+        let bright = 1
+
+        if (chanceTry < (1/ownedChance)*2)
+            {
+                bright = 2-(ownedChance*chanceTry)
+                console.log(bright)
+            }
+        else if (chanceTry < (1/ownedChance)*3) {
+            bright = 2-(ownedChance*chanceTry)
+            chanceTryElem.style.fontSize = (1+(chanceTry - (1/ownedChance)))/2+"rem"
+        }
+        else
+            bright = 0
+        
+
+        return bright
+    }
+
+    function rng(){
+        randomValue = Math.random()
+        chance = inputField.value //25
+        ownedChance = chance / 100 // 25 -> 0.25
+        num.innerHTML = 1/ownedChance
+        cylcle = true
+        chanceTry++
+        chanceTryElem.innerHTML = chanceTry
+        
+        if (chanceTry >= 1/ownedChance) {
+            chanceTryElem.style.color = "rgb(255,0,0)"
+            chanceTryElem.style.filter = "brightness("+getBright()+")"
+        }
+        else {
+            chanceTryElem.style.color = "white"
+            chanceTryElem.style.fontSize = "2rem"
+        }
+        
+        if (randomValue < ownedChance) {
+            result = "Получилось!"
+            resultField.style.color = "green"
+            chanceTryElem.style.color = "green"
+            chanceTry = 0
+            chanceTryElem.style.filter = ""
+        }
+        else {
+            result = "Соси бибу"
+            resultField.style.color = "rgb(255,0,0)"
+        }
+
+        
+        
+        listRng.push(ownedChance +"<"+ randomValue)
+        list.innerHTML = htmlArray(listRng)
+        // alert(ownedChance)
+        resultField.innerHTML = result
+        resultField.title = randomValue
+
+        colorValues()
+    }
+
+    function colorValues() {
+        list.childNodes.forEach(el => {
+            el.style.color = ("rgb("+el.innerHTML*255+","+el.innerHTML*255+","+0+")")
+        })
+    }
+
+    function validateGarterZero() {
+        if (inputField.value == 0) {
+            inputField.value = 1
+        }
+    }
+
+    function change_history() {
+        console.log("sex?");
+        if (checkbox.checked) {
+            console.log("1?");
+            historyElem.style.display = ""
+        }
+        else {
+            console.log("2?");
+            historyElem.style.display = "none"
+        }
+        
+    }
+
+    checkbox.addEventListener("click", change_history)
+    btn.addEventListener("click", rng)
+    inputField.addEventListener("change", validateGarterZero)
+
+
+    window.onkeypress = handle;
+
+    function handle(e) {
+
+    let text = e.type +
+        ' key=' + e.key +
+        ' code=' + e.code +
+        (e.shiftKey ? ' shiftKey' : '') +
+        (e.ctrlKey ? ' ctrlKey' : '') +
+        (e.altKey ? ' altKey' : '') +
+        (e.metaKey ? ' metaKey' : '') +
+        (e.repeat ? ' (repeat)' : '') +
+        "\n";
+    //console.log(text)
+    if (e.key = ("F"))
+        rng()
+    }
+</script>
